@@ -10,8 +10,8 @@ export default function HomePage() {
           <Image
             src="/hearth-logo.png"
             alt="Hearth Property Management"
-            width={140}
-            height={48}
+            width={160}
+            height={45}
             priority
           />
         </div>
