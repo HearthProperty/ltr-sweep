@@ -1,6 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+/** Format phone as (XXX) XXX-XXXX */
+function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
 
 interface FormData {
   ownerName: string;
@@ -44,6 +52,8 @@ export default function SweepForm() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const addressInputRef = useRef<HTMLInputElement>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   const [form, setForm] = useState<FormData>({
     ownerName: '',
@@ -68,6 +78,47 @@ export default function SweepForm() {
   const update = (field: keyof FormData, value: string | boolean | null | string[]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    update('phone', formatPhone(e.target.value));
+  };
+
+  // Initialize Google Places Autocomplete when step 2 becomes active
+  const initAutocomplete = useCallback(() => {
+    if (
+      !addressInputRef.current ||
+      autocompleteRef.current ||
+      typeof google === 'undefined' ||
+      !google.maps?.places
+    ) return;
+
+    autocompleteRef.current = new google.maps.places.Autocomplete(
+      addressInputRef.current,
+      {
+        types: ['address'],
+        componentRestrictions: { country: 'us' },
+        fields: ['formatted_address'],
+      }
+    );
+
+    autocompleteRef.current.addListener('place_changed', () => {
+      const place = autocompleteRef.current?.getPlace();
+      if (place?.formatted_address) {
+        update('propertyAddress', place.formatted_address);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (step === 2) {
+      // Small delay to let the DOM render 
+      const timer = setTimeout(initAutocomplete, 100);
+      return () => clearTimeout(timer);
+    } else {
+      // Reset ref when leaving step 2 so it re-initializes
+      autocompleteRef.current = null;
+    }
+  }, [step, initAutocomplete]);
 
   const togglePassthrough = (cat: string) => {
     setForm((prev) => {
@@ -216,7 +267,7 @@ export default function SweepForm() {
               type="tel"
               placeholder="(555) 123-4567"
               value={form.phone}
-              onChange={(e) => update('phone', e.target.value)}
+              onChange={handlePhoneChange}
             />
           </div>
         </div>
@@ -232,11 +283,13 @@ export default function SweepForm() {
             <label htmlFor="propertyAddress">Property Address</label>
             <input
               id="propertyAddress"
+              ref={addressInputRef}
               type="text"
-              placeholder="1234 Main St, Austin TX 78701"
+              placeholder="Start typing an address..."
               value={form.propertyAddress}
               onChange={(e) => update('propertyAddress', e.target.value)}
               autoFocus
+              autoComplete="off"
             />
           </div>
 

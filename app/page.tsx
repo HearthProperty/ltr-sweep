@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import SweepForm from './components/SweepForm';
 
 export default function HomePage() {
@@ -5,6 +6,15 @@ export default function HomePage() {
     <main className="landing">
       {/* Hero */}
       <section className="hero">
+        <div className="hero-logo">
+          <Image
+            src="/hearth-logo.png"
+            alt="Hearth Property Management"
+            width={140}
+            height={48}
+            priority
+          />
+        </div>
         <div className="hero-inner">
           <div className="hero-badge">Monthly Sweep Simulator</div>
           <h1>See What Your Monthly Owner Statement Should Look Like</h1>
