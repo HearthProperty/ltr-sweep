@@ -115,9 +115,9 @@ function ResultsContent() {
             <span>Repairs &amp; Maintenance</span>
             <span>−${s.repairsEstimate.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
           </div>
-          <div className="statement-line deduction">
+          <div className="statement-line reserve">
             <span>Operating Reserve</span>
-            <span>−${s.reserveContribution.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+            <span>${s.reserveContribution.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
           </div>
           {s.hoaPassthrough > 0 && (
             <div className="statement-line deduction">

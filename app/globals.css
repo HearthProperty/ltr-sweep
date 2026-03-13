@@ -814,6 +814,11 @@ body {
   color: var(--red);
 }
 
+.statement-line.reserve span:last-child {
+  color: var(--hearth-green);
+  font-weight: 600;
+}
+
 .statement-line.total {
   border-top: 2px solid var(--ink);
   border-bottom: none;
