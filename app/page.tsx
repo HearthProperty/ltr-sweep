@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import SweepForm from './components/SweepForm';
 
 export default function HomePage() {
@@ -7,13 +8,15 @@ export default function HomePage() {
       {/* Hero */}
       <section className="hero">
         <div className="hero-logo">
-          <Image
-            src="/hearth-logo.png"
-            alt="Hearth Property Management"
-            width={160}
-            height={45}
-            priority
-          />
+          <Link href="/">
+            <Image
+              src="/hearth-logo.png"
+              alt="Hearth Property Management"
+              width={160}
+              height={45}
+              priority
+            />
+          </Link>
         </div>
         <div className="hero-inner">
           <div className="hero-badge">Monthly Sweep Simulator</div>

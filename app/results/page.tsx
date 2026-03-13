@@ -79,10 +79,13 @@ function ResultsContent() {
     <div className="results-page">
       {/* Header */}
       <header className="results-header">
-        <div className="results-brand">
-          <h1>Monthly Sweep</h1>
-          <p>Hearth Property Management</p>
-        </div>
+        <a href="/" className="results-brand">
+          <img src="/hearth-logo.png" alt="Hearth" className="results-logo" />
+          <div>
+            <h1>Monthly Sweep</h1>
+            <p>Hearth Property Management</p>
+          </div>
+        </a>
       </header>
 
       {/* Hero Summary */}

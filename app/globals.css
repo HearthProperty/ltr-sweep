@@ -687,6 +687,18 @@ body {
   margin-bottom: var(--space-xl);
 }
 
+.results-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  text-decoration: none;
+}
+
+.results-logo {
+  height: 32px;
+  width: auto;
+}
+
 .results-brand h1 {
   font-size: 1.1rem;
   font-weight: 700;
