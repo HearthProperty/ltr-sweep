@@ -6,7 +6,6 @@ import { generateReserveRecommendation } from './reserve';
 import {
   HEARTH_MANAGEMENT_FEE_RATE,
   UTILITY_OWNER_RATE,
-  UTILITY_SPLIT_RATE,
   RESERVE_RATE,
   RESERVE_FLOOR,
 } from './config';
@@ -23,8 +22,6 @@ function calculateUtilities(monthlyRent: number, responsibility: FormInput['util
       return 0;
     case 'owner':
       return round2(monthlyRent * UTILITY_OWNER_RATE);
-    case 'split':
-      return round2(monthlyRent * UTILITY_SPLIT_RATE);
     default:
       return 0;
   }
@@ -42,9 +39,10 @@ function calculateReserveContribution(monthlyRent: number, reserveTarget?: numbe
 export function generateStatement(input: FormInput): StatementResult {
   const grossRent = round2(input.monthlyRent);
   const hearthManagementFee = round2(grossRent * HEARTH_MANAGEMENT_FEE_RATE);
-  const repairsEstimate = round2(input.avgMonthlyRepairs);
+  // Estimate repairs at ~2% of rent if not provided
+  const repairsEstimate = round2(input.avgMonthlyRepairs ?? grossRent * 0.02);
   const reserveContribution = calculateReserveContribution(grossRent, input.reserveTarget);
-  const hoaPassthrough = round2(input.hoaPassthrough);
+  const hoaPassthrough = round2(input.hoaPassthrough ?? 0);
   const utilities = calculateUtilities(grossRent, input.utilitiesResponsibility);
 
   const totalDeductions = round2(

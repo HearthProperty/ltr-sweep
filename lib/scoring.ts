@@ -26,11 +26,6 @@ const SCORING_SIGNALS: ScoringSignal[] = [
     test: (input) => !input.hasCleanStatement,
   },
   {
-    signal: 'Multiple pass-through categories',
-    points: 10,
-    test: (input) => input.passthroughCategories.length >= 2,
-  },
-  {
     signal: 'Switch planned within 60 days',
     points: 20,
     test: (input) => input.switchTimeline === '< 30 days' || input.switchTimeline === '30-60 days',
@@ -61,7 +56,7 @@ export function calculateScore(input: FormInput): ScoreResult {
     .reduce((sum, b) => sum + b.points, 0);
 
   // Max possible depends on management type (mutually exclusive)
-  const maxScore = input.managementType === 'self-managed' ? 80 : 75;
+  const maxScore = input.managementType === 'self-managed' ? 70 : 65;
 
   return {
     leadScore,

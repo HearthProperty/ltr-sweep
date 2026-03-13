@@ -17,28 +17,15 @@ interface FormData {
   propertyAddress: string;
   monthlyRent: string;
   managementFeeCurrent: string;
+  leasingFeeCurrent: string;
   managementType: 'self-managed' | 'current_pm' | '';
   numUnits: string;
   hasCleanStatement: boolean | null;
-  avgMonthlyRepairs: string;
-  reserveTarget: string;
-  utilitiesResponsibility: 'owner' | 'tenant' | 'split' | '';
-  hoaPassthrough: string;
-  passthroughCategories: string[];
+  utilitiesResponsibility: 'owner' | 'tenant' | '';
   desiredSwitchDate: string;
   switchTimeline: '< 30 days' | '30-60 days' | '60-90 days' | '90+ days' | '';
   primaryProblem: string;
 }
-
-const PASSTHROUGH_OPTIONS = [
-  'HOA dues',
-  'Insurance',
-  'Property taxes',
-  'Landscaping',
-  'Pest control',
-  'Pool maintenance',
-  'Other',
-];
 
 const PRIMARY_PROBLEMS = [
   'Messy statements',
@@ -53,6 +40,7 @@ export default function SweepForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [feeMode, setFeeMode] = useState<'percent' | 'flat'>('percent');
+  const [leasingFeeMode, setLeasingFeeMode] = useState<'percent' | 'flat'>('percent');
   const [hasMultipleUnits, setHasMultipleUnits] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -64,14 +52,11 @@ export default function SweepForm() {
     propertyAddress: '',
     monthlyRent: '',
     managementFeeCurrent: '',
+    leasingFeeCurrent: '',
     managementType: '',
     numUnits: '1',
     hasCleanStatement: null,
-    avgMonthlyRepairs: '',
-    reserveTarget: '',
     utilitiesResponsibility: '',
-    hoaPassthrough: '0',
-    passthroughCategories: [],
     desiredSwitchDate: '',
     switchTimeline: '',
     primaryProblem: '',
@@ -122,14 +107,7 @@ export default function SweepForm() {
     }
   }, [step, initAutocomplete]);
 
-  const togglePassthrough = (cat: string) => {
-    setForm((prev) => {
-      const cats = prev.passthroughCategories.includes(cat)
-        ? prev.passthroughCategories.filter((c) => c !== cat)
-        : [...prev.passthroughCategories, cat];
-      return { ...prev, passthroughCategories: cats };
-    });
-  };
+
 
   // --- Step validation ---
   const canAdvance = (): boolean => {
@@ -148,7 +126,6 @@ export default function SweepForm() {
     }
     if (step === 3) {
       return !!(
-        form.avgMonthlyRepairs !== '' &&
         form.utilitiesResponsibility &&
         form.desiredSwitchDate &&
         form.switchTimeline &&
@@ -173,14 +150,13 @@ export default function SweepForm() {
         managementFeeCurrent: feeMode === 'percent'
           ? Math.round(parseFloat(form.monthlyRent) * (parseFloat(form.managementFeeCurrent) / 100) * 100) / 100
           : parseFloat(form.managementFeeCurrent),
+        leasingFeeCurrent: leasingFeeMode === 'percent'
+          ? Math.round(parseFloat(form.monthlyRent) * (parseFloat(form.leasingFeeCurrent || '0') / 100) * 100) / 100
+          : parseFloat(form.leasingFeeCurrent || '0'),
         managementType: form.managementType,
         numUnits: parseInt(form.numUnits, 10),
         hasCleanStatement: form.hasCleanStatement,
-        avgMonthlyRepairs: parseFloat(form.avgMonthlyRepairs) || 0,
-        reserveTarget: form.reserveTarget ? parseFloat(form.reserveTarget) : undefined,
         utilitiesResponsibility: form.utilitiesResponsibility,
-        hoaPassthrough: parseFloat(form.hoaPassthrough) || 0,
-        passthroughCategories: form.passthroughCategories,
         desiredSwitchDate: form.desiredSwitchDate,
         switchTimeline: form.switchTimeline,
         primaryProblem: form.primaryProblem,
@@ -366,6 +342,34 @@ export default function SweepForm() {
             )}
           </div>
 
+          {form.managementType === 'current_pm' && (
+            <div className="field-group">
+              <label htmlFor="leasingFeeCurrent">
+                Current Leasing Fee
+                <button
+                  type="button"
+                  className="fee-mode-toggle"
+                  onClick={() => {
+                    setLeasingFeeMode(leasingFeeMode === 'percent' ? 'flat' : 'percent');
+                    update('leasingFeeCurrent', '');
+                  }}
+                >
+                  Switch to {leasingFeeMode === 'percent' ? '$' : '%'}
+                </button>
+              </label>
+              <div className="input-prefix">
+                <span>{leasingFeeMode === 'percent' ? '%' : '$'}</span>
+                <input
+                  id="leasingFeeCurrent"
+                  type="number"
+                  placeholder={leasingFeeMode === 'percent' ? '50' : '1250'}
+                  value={form.leasingFeeCurrent}
+                  onChange={(e) => update('leasingFeeCurrent', e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="field-group">
             <label>Multiple units?</label>
             <div className="toggle-group">
@@ -429,80 +433,20 @@ export default function SweepForm() {
       {/* Step 3: Estimates */}
       {step === 3 && (
         <div className="form-step" key="step3">
-          <h2 className="step-title">Quick estimates</h2>
-          <p className="step-subtitle">These help us model your statement. Best guesses are fine.</p>
-
-          <div className="field-row">
-            <div className="field-group">
-              <label htmlFor="avgMonthlyRepairs">Avg. Monthly Repairs</label>
-              <div className="input-prefix">
-                <span>$</span>
-                <input
-                  id="avgMonthlyRepairs"
-                  type="number"
-                  placeholder="150"
-                  value={form.avgMonthlyRepairs}
-                  onChange={(e) => update('avgMonthlyRepairs', e.target.value)}
-                  autoFocus
-                />
-              </div>
-            </div>
-            <div className="field-group">
-              <label htmlFor="reserveTarget">Reserve Target <span className="optional">(optional)</span></label>
-              <div className="input-prefix">
-                <span>$</span>
-                <input
-                  id="reserveTarget"
-                  type="number"
-                  placeholder="Auto-calculated"
-                  value={form.reserveTarget}
-                  onChange={(e) => update('reserveTarget', e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
+          <h2 className="step-title">A few more details</h2>
+          <p className="step-subtitle">Almost done — this helps us model your statement accurately.</p>
 
           <div className="field-group">
             <label>Who pays utilities?</label>
-            <div className="toggle-group triple">
-              {(['tenant', 'owner', 'split'] as const).map((opt) => (
+            <div className="toggle-group">
+              {(['tenant', 'owner'] as const).map((opt) => (
                 <button
                   key={opt}
                   type="button"
                   className={`toggle-btn ${form.utilitiesResponsibility === opt ? 'active' : ''}`}
                   onClick={() => update('utilitiesResponsibility', opt)}
                 >
-                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="field-group">
-            <label htmlFor="hoaPassthrough">HOA / Monthly Pass-throughs</label>
-            <div className="input-prefix">
-              <span>$</span>
-              <input
-                id="hoaPassthrough"
-                type="number"
-                placeholder="0"
-                value={form.hoaPassthrough}
-                onChange={(e) => update('hoaPassthrough', e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="field-group">
-            <label>Pass-through Categories <span className="optional">(select all that apply)</span></label>
-            <div className="chip-group">
-              {PASSTHROUGH_OPTIONS.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  className={`chip ${form.passthroughCategories.includes(cat) ? 'active' : ''}`}
-                  onClick={() => togglePassthrough(cat)}
-                >
-                  {cat}
+                  {opt === 'tenant' ? 'Tenant Pays' : 'Owner Pays'}
                 </button>
               ))}
             </div>

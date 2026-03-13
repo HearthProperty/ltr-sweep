@@ -13,9 +13,11 @@ function round2(n: number): number {
 
 /** Determine if the property has high complexity */
 function isHighComplexity(input: FormInput): boolean {
-  const highRepairs = input.avgMonthlyRepairs > input.monthlyRent * 0.10; // >10% of rent
-  const manyPassthroughs = input.passthroughCategories.length >= 3;
-  const hasHoa = input.hoaPassthrough > 0;
+  const repairs = input.avgMonthlyRepairs ?? (input.monthlyRent * 0.02);
+  const highRepairs = repairs > input.monthlyRent * 0.10; // >10% of rent
+  const categories = input.passthroughCategories ?? [];
+  const manyPassthroughs = categories.length >= 3;
+  const hasHoa = (input.hoaPassthrough ?? 0) > 0;
   return highRepairs || manyPassthroughs || (hasHoa && manyPassthroughs);
 }
 
@@ -34,9 +36,9 @@ export function generateReserveRecommendation(input: FormInput): ReserveRecommen
   let rationale: string;
   if (highComplexity) {
     const reasons: string[] = [];
-    if (input.avgMonthlyRepairs > input.monthlyRent * 0.10) reasons.push('above-average repair costs');
-    if (input.passthroughCategories.length >= 3) reasons.push('multiple pass-through categories');
-    if (input.hoaPassthrough > 0) reasons.push('HOA obligations');
+    if ((input.avgMonthlyRepairs ?? 0) > input.monthlyRent * 0.10) reasons.push('above-average repair costs');
+    if ((input.passthroughCategories ?? []).length >= 3) reasons.push('multiple pass-through categories');
+    if ((input.hoaPassthrough ?? 0) > 0) reasons.push('HOA obligations');
 
     rationale = `Based on ${reasons.join(', ')}, we recommend a higher operating reserve. ` +
       `A monthly contribution of $${monthlyContribution.toLocaleString()} builds toward a ` +
