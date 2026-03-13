@@ -34,6 +34,7 @@ export type FormInput = z.infer<typeof formInputSchema>;
 export interface SampleStatement {
   grossRent: number;
   hearthManagementFee: number;
+  effectiveManagementRate: number;
   repairsEstimate: number;
   reserveContribution: number;
   hoaPassthrough: number;

@@ -77,16 +77,6 @@ function ResultsContent() {
 
   return (
     <div className="results-page">
-      {/* Header */}
-      <header className="results-header">
-        <a href="/" className="results-brand">
-          <img src="/hearth-logo.png" alt="Hearth" className="results-logo" />
-          <div>
-            <h1>Monthly Sweep</h1>
-            <p>Hearth Property Management</p>
-          </div>
-        </a>
-      </header>
 
       {/* Hero Summary */}
       <section className="results-hero">
@@ -108,7 +98,7 @@ function ResultsContent() {
             <span>${s.grossRent.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="statement-line deduction">
-            <span>Hearth Management Fee (8%)</span>
+            <span>Management Fee ({s.effectiveManagementRate}%)</span>
             <span>−${s.hearthManagementFee.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
           </div>
           <div className="statement-line deduction">
