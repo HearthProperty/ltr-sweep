@@ -489,7 +489,6 @@ export default function SweepForm() {
                     checked={form.primaryProblem === problem}
                     onChange={(e) => update('primaryProblem', e.target.value)}
                   />
-                  <span className="radio-dot" />
                   {problem}
                 </label>
               ))}
