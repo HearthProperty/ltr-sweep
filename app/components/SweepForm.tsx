@@ -57,8 +57,8 @@ export default function SweepForm() {
     numUnits: '1',
     hasCleanStatement: null,
     utilitiesResponsibility: '',
-    desiredSwitchDate: '',
-    switchTimeline: '',
+    desiredSwitchDate: new Date().toISOString().split('T')[0],
+    switchTimeline: '< 30 days',
     primaryProblem: '',
   });
 
