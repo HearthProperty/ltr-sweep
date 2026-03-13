@@ -66,9 +66,6 @@ export function generateStatement(input: FormInput): StatementResult {
   const approvalBreakdown: ApprovalBreakdown = {
     ownerApproves: [
       'Major repairs above threshold',
-      'Unusual or non-routine spend',
-      'Capital improvements',
-      'Policy exceptions',
     ],
     hearthHandles: [
       'Monthly Sweep statement generation',
