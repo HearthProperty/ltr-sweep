@@ -55,6 +55,17 @@ function buildSummaryString(input: FormInput, statement: StatementResult, score:
   return lines.join(' | ');
 }
 
+/** Convert switch timeline label to a numeric day estimate */
+function timelineToDays(timeline: string): number {
+  switch (timeline) {
+    case '< 30 days': return 30;
+    case '30-60 days': return 45;
+    case '60-90 days': return 75;
+    case '90+ days': return 120;
+    default: return 60;
+  }
+}
+
 export async function createLead(
   input: FormInput,
   statement: StatementResult,
@@ -70,7 +81,7 @@ export async function createLead(
   const customFields: Record<string, unknown> = {};
   if (closeConfig.cf.propertyAddress) customFields[`custom.${closeConfig.cf.propertyAddress}`] = input.propertyAddress;
   if (closeConfig.cf.askingRent) customFields[`custom.${closeConfig.cf.askingRent}`] = input.monthlyRent;
-  if (closeConfig.cf.daysOnMarket) customFields[`custom.${closeConfig.cf.daysOnMarket}`] = input.switchTimeline;
+  if (closeConfig.cf.daysOnMarket) customFields[`custom.${closeConfig.cf.daysOnMarket}`] = timelineToDays(input.switchTimeline);
   if (closeConfig.cf.urgencyScore) customFields[`custom.${closeConfig.cf.urgencyScore}`] = `${score.leadScore}/${score.maxScore} — ${score.scoreClassification}`;
   if (closeConfig.cf.auditSummary) customFields[`custom.${closeConfig.cf.auditSummary}`] = buildSummaryString(input, statement, score);
   if (closeConfig.cf.leadSource) customFields[`custom.${closeConfig.cf.leadSource}`] = 'Monthly Sweep Simulator';

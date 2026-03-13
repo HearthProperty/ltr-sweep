@@ -26,18 +26,17 @@ export async function sendLeadNotification(
       color: 3066993, // Hearth-aligned green
       fields: [
         { name: 'Lead Magnet', value: 'Monthly Sweep Simulator', inline: true },
-        { name: 'Owner', value: input.ownerName, inline: true },
-        { name: 'Email', value: input.email, inline: true },
-        { name: 'Phone', value: input.phone, inline: true },
-        { name: 'Property', value: input.propertyAddress, inline: false },
+        { name: 'Owner', value: input.ownerName || 'N/A', inline: true },
+        { name: 'Email', value: input.email || 'N/A', inline: true },
+        { name: 'Phone', value: input.phone || 'N/A', inline: true },
+        { name: 'Property', value: input.propertyAddress || 'N/A', inline: false },
         { name: 'Monthly Rent', value: `$${input.monthlyRent.toLocaleString()}/mo`, inline: true },
         { name: 'Current Fee', value: `$${input.managementFeeCurrent.toLocaleString()}/mo`, inline: true },
         { name: 'Manager', value: mgmtLabel, inline: true },
         { name: 'Switch Date', value: `${input.desiredSwitchDate} (${input.switchTimeline})`, inline: true },
         { name: 'Score', value: `${scoreEmoji} ${score.leadScore}/${score.maxScore} — ${score.scoreClassification}`, inline: true },
-        { name: 'Primary Problem', value: input.primaryProblem, inline: true },
+        { name: 'Primary Problem', value: input.primaryProblem || 'N/A', inline: true },
         { name: 'Net Distribution', value: `$${statement.sampleStatement.netOwnerDistribution.toLocaleString()}/mo`, inline: true },
-        { name: 'Result', value: `[View Statement](${resultUrl})`, inline: false },
       ],
       timestamp: new Date().toISOString(),
     };
