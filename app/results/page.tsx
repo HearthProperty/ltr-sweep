@@ -82,8 +82,8 @@ function ResultsContent() {
 
   const scoreColor =
     score.scoreClassification === 'immediate' ? '#e74c3c' :
-    score.scoreClassification === 'high' ? '#e67e22' :
-    score.scoreClassification === 'moderate' ? '#f1c40f' : '#2ecc71';
+    score.scoreClassification === 'high' ? '#f97316' :
+    score.scoreClassification === 'moderate' ? '#eab308' : '#22c55e';
 
   return (
     <div className="results-page">
