@@ -52,6 +52,8 @@ export default function SweepForm() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [feeMode, setFeeMode] = useState<'percent' | 'flat'>('percent');
+  const [hasMultipleUnits, setHasMultipleUnits] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -138,7 +140,7 @@ export default function SweepForm() {
       return !!(
         form.propertyAddress &&
         form.monthlyRent &&
-        form.managementFeeCurrent &&
+        (form.managementType === 'self-managed' || form.managementFeeCurrent) &&
         form.managementType &&
         form.numUnits &&
         form.hasCleanStatement !== null
@@ -168,7 +170,9 @@ export default function SweepForm() {
         phone: form.phone,
         propertyAddress: form.propertyAddress,
         monthlyRent: parseFloat(form.monthlyRent),
-        managementFeeCurrent: parseFloat(form.managementFeeCurrent),
+        managementFeeCurrent: feeMode === 'percent'
+          ? Math.round(parseFloat(form.monthlyRent) * (parseFloat(form.managementFeeCurrent) / 100) * 100) / 100
+          : parseFloat(form.managementFeeCurrent),
         managementType: form.managementType,
         numUnits: parseInt(form.numUnits, 10),
         hasCleanStatement: form.hasCleanStatement,
@@ -293,7 +297,33 @@ export default function SweepForm() {
             />
           </div>
 
-          <div className="field-row">
+          <div className="field-group">
+            <label>Management Situation</label>
+            <div className="toggle-group">
+              <button
+                type="button"
+                className={`toggle-btn ${form.managementType === 'self-managed' ? 'active' : ''}`}
+                onClick={() => {
+                  update('managementType', 'self-managed');
+                  update('managementFeeCurrent', '0');
+                }}
+              >
+                Self-Managed
+              </button>
+              <button
+                type="button"
+                className={`toggle-btn ${form.managementType === 'current_pm' ? 'active' : ''}`}
+                onClick={() => {
+                  update('managementType', 'current_pm');
+                  update('managementFeeCurrent', '');
+                }}
+              >
+                Have a PM
+              </button>
+            </div>
+          </div>
+
+          <div className={`field-row ${form.managementType !== 'current_pm' ? 'field-row-single' : ''}`}>
             <div className="field-group">
               <label htmlFor="monthlyRent">Monthly Rent</label>
               <div className="input-prefix">
@@ -307,51 +337,72 @@ export default function SweepForm() {
                 />
               </div>
             </div>
-            <div className="field-group">
-              <label htmlFor="managementFeeCurrent">Current Mgmt Fee</label>
-              <div className="input-prefix">
-                <span>$</span>
-                <input
-                  id="managementFeeCurrent"
-                  type="number"
-                  placeholder="200"
-                  value={form.managementFeeCurrent}
-                  onChange={(e) => update('managementFeeCurrent', e.target.value)}
-                />
+            {form.managementType === 'current_pm' && (
+              <div className="field-group">
+                <label htmlFor="managementFeeCurrent">
+                  Current Mgmt Fee
+                  <button
+                    type="button"
+                    className="fee-mode-toggle"
+                    onClick={() => {
+                      setFeeMode(feeMode === 'percent' ? 'flat' : 'percent');
+                      update('managementFeeCurrent', '');
+                    }}
+                  >
+                    Switch to {feeMode === 'percent' ? '$' : '%'}
+                  </button>
+                </label>
+                <div className="input-prefix">
+                  <span>{feeMode === 'percent' ? '%' : '$'}</span>
+                  <input
+                    id="managementFeeCurrent"
+                    type="number"
+                    placeholder={feeMode === 'percent' ? '10' : '200'}
+                    value={form.managementFeeCurrent}
+                    onChange={(e) => update('managementFeeCurrent', e.target.value)}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="field-group">
-            <label>Management Situation</label>
+            <label>Multiple units?</label>
             <div className="toggle-group">
               <button
                 type="button"
-                className={`toggle-btn ${form.managementType === 'self-managed' ? 'active' : ''}`}
-                onClick={() => update('managementType', 'self-managed')}
+                className={`toggle-btn ${!hasMultipleUnits ? 'active' : ''}`}
+                onClick={() => {
+                  setHasMultipleUnits(false);
+                  update('numUnits', '1');
+                }}
               >
-                Self-Managed
+                No — Single Unit
               </button>
               <button
                 type="button"
-                className={`toggle-btn ${form.managementType === 'current_pm' ? 'active' : ''}`}
-                onClick={() => update('managementType', 'current_pm')}
+                className={`toggle-btn ${hasMultipleUnits ? 'active' : ''}`}
+                onClick={() => {
+                  setHasMultipleUnits(true);
+                  update('numUnits', '2');
+                }}
               >
-                Have a PM
+                Yes
               </button>
             </div>
           </div>
-
-          <div className="field-group">
-            <label htmlFor="numUnits">Number of Units</label>
-            <input
-              id="numUnits"
-              type="number"
-              min="1"
-              value={form.numUnits}
-              onChange={(e) => update('numUnits', e.target.value)}
-            />
-          </div>
+          {hasMultipleUnits && (
+            <div className="field-group">
+              <label htmlFor="numUnits">How many units?</label>
+              <input
+                id="numUnits"
+                type="number"
+                min="2"
+                value={form.numUnits}
+                onChange={(e) => update('numUnits', e.target.value)}
+              />
+            </div>
+          )}
 
           <div className="field-group">
             <label>Do you currently receive a clean monthly statement?</label>

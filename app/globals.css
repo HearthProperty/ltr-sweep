@@ -370,6 +370,29 @@ body {
   gap: var(--space-md);
 }
 
+.field-row.field-row-single {
+  grid-template-columns: 1fr;
+}
+
+/* Fee mode toggle (inline in label) */
+.fee-mode-toggle {
+  background: none;
+  border: none;
+  color: var(--hearth-green);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: var(--space-sm);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+
+.fee-mode-toggle:hover {
+  color: var(--hearth-green-dark);
+}
+
 .input-prefix {
   position: relative;
   display: flex;
