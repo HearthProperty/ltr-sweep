@@ -191,14 +191,6 @@ function ResultsContent() {
 
       {/* Actions */}
       <section className="results-actions">
-        <button
-          className="btn-download"
-          onClick={handleDownloadPDF}
-          disabled={downloading}
-        >
-          {downloading ? 'Generating PDF...' : '📄 Download Statement PDF'}
-        </button>
-
         <div className="cta-block">
           <h2>Ready to make this real?</h2>
           <p>
