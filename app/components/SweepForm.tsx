@@ -299,7 +299,7 @@ export default function SweepForm() {
             </div>
           </div>
 
-          <div className={`field-row ${form.managementType !== 'current_pm' ? 'field-row-single' : ''}`}>
+          <div className={`field-row ${form.managementType === 'current_pm' ? 'field-row-triple' : 'field-row-single'}`}>
             <div className="field-group">
               <label htmlFor="monthlyRent">Monthly Rent</label>
               <div className="input-prefix">
@@ -316,7 +316,7 @@ export default function SweepForm() {
             {form.managementType === 'current_pm' && (
               <div className="field-group">
                 <label htmlFor="managementFeeCurrent">
-                  Current Mgmt Fee
+                  Mgmt Fee
                   <button
                     type="button"
                     className="fee-mode-toggle"
@@ -325,7 +325,7 @@ export default function SweepForm() {
                       update('managementFeeCurrent', '');
                     }}
                   >
-                    Switch to {feeMode === 'percent' ? '$' : '%'}
+                    {feeMode === 'percent' ? '$' : '%'}
                   </button>
                 </label>
                 <div className="input-prefix">
@@ -340,35 +340,34 @@ export default function SweepForm() {
                 </div>
               </div>
             )}
-          </div>
-
-          {form.managementType === 'current_pm' && (
-            <div className="field-group">
-              <label htmlFor="leasingFeeCurrent">
-                Current Leasing Fee
-                <button
-                  type="button"
-                  className="fee-mode-toggle"
-                  onClick={() => {
-                    setLeasingFeeMode(leasingFeeMode === 'percent' ? 'flat' : 'percent');
-                    update('leasingFeeCurrent', '');
-                  }}
-                >
-                  Switch to {leasingFeeMode === 'percent' ? '$' : '%'}
-                </button>
-              </label>
-              <div className="input-prefix">
-                <span>{leasingFeeMode === 'percent' ? '%' : '$'}</span>
-                <input
-                  id="leasingFeeCurrent"
-                  type="number"
-                  placeholder={leasingFeeMode === 'percent' ? '50' : '1250'}
-                  value={form.leasingFeeCurrent}
-                  onChange={(e) => update('leasingFeeCurrent', e.target.value)}
-                />
+            {form.managementType === 'current_pm' && (
+              <div className="field-group">
+                <label htmlFor="leasingFeeCurrent">
+                  Leasing Fee
+                  <button
+                    type="button"
+                    className="fee-mode-toggle"
+                    onClick={() => {
+                      setLeasingFeeMode(leasingFeeMode === 'percent' ? 'flat' : 'percent');
+                      update('leasingFeeCurrent', '');
+                    }}
+                  >
+                    {leasingFeeMode === 'percent' ? '$' : '%'}
+                  </button>
+                </label>
+                <div className="input-prefix">
+                  <span>{leasingFeeMode === 'percent' ? '%' : '$'}</span>
+                  <input
+                    id="leasingFeeCurrent"
+                    type="number"
+                    placeholder={leasingFeeMode === 'percent' ? '50' : '1250'}
+                    value={form.leasingFeeCurrent}
+                    onChange={(e) => update('leasingFeeCurrent', e.target.value)}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           <div className="field-group">
             <label>Multiple units?</label>

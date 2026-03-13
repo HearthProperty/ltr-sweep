@@ -374,6 +374,10 @@ body {
   grid-template-columns: 1fr;
 }
 
+.field-row.field-row-triple {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 /* Fee mode toggle (inline in label) */
 .fee-mode-toggle {
   background: none;
