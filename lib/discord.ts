@@ -1,7 +1,6 @@
 // Discord notification — fire-and-forget.
 // If this fails, we log the error but never block the lead submission.
 
-import { config } from './config';
 import type { FormInput, ScoreResult, StatementResult } from './types';
 
 export async function sendLeadNotification(
@@ -11,6 +10,12 @@ export async function sendLeadNotification(
   resultUrl: string
 ): Promise<boolean> {
   try {
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (!webhookUrl) {
+      console.log('[Discord] Skipped — webhook URL not configured');
+      return false;
+    }
+
     const mgmtLabel = input.managementType === 'self-managed' ? 'Self-managed' : 'Has a PM';
     const scoreEmoji = score.scoreClassification === 'immediate' ? '🔴' :
       score.scoreClassification === 'high' ? '🟠' :
@@ -37,7 +42,7 @@ export async function sendLeadNotification(
       timestamp: new Date().toISOString(),
     };
 
-    const response = await fetch(config.discord.webhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ embeds: [embed] }),

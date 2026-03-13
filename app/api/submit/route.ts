@@ -42,11 +42,11 @@ export async function POST(request: Request) {
     );
     const resultUrl = `${siteUrl}/results?data=${resultData}`;
 
-    // 5. Close CRM (critical path) + Discord (fire-and-forget) in parallel
+    // 5. Close CRM + Discord in parallel (both non-blocking — never kill the response)
     const [closeResult] = await Promise.allSettled([
       createLead(input, statement, score).catch(err => {
-        console.error('[Submit] Close CRM failed:', err);
-        throw err; // Re-throw — Close is critical path
+        console.error('[Submit] Close CRM failed (non-blocking):', err);
+        return undefined;
       }),
       sendLeadNotification(input, statement, score, resultUrl).catch(err => {
         console.error('[Submit] Discord failed (non-blocking):', err);

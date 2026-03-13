@@ -43,7 +43,7 @@ function buildSummaryString(input: FormInput, statement: StatementResult, score:
     `Monthly Rent: $${input.monthlyRent.toLocaleString()}`,
     `Current Fee: $${input.managementFeeCurrent.toLocaleString()}`,
     `Management: ${mgmtLabel}`,
-    `Hearth Fee (8%): $${statement.sampleStatement.hearthManagementFee.toLocaleString()}`,
+    `Effective Rate: ${statement.sampleStatement.effectiveManagementRate}%`,
     `Net Distribution: $${statement.sampleStatement.netOwnerDistribution.toLocaleString()}`,
     `Reserve: $${statement.reserveRecommendation.monthlyContribution.toLocaleString()}/mo`,
     `Units: ${input.numUnits}`,
