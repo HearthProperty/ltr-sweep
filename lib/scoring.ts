@@ -26,11 +26,6 @@ const SCORING_SIGNALS: ScoringSignal[] = [
     test: (input) => !input.hasCleanStatement,
   },
   {
-    signal: 'Switch planned within 60 days',
-    points: 20,
-    test: (input) => input.switchTimeline === '< 30 days' || input.switchTimeline === '30-60 days',
-  },
-  {
     signal: '2+ units',
     points: 15,
     test: (input) => input.numUnits >= 2,
@@ -56,7 +51,7 @@ export function calculateScore(input: FormInput): ScoreResult {
     .reduce((sum, b) => sum + b.points, 0);
 
   // Max possible depends on management type (mutually exclusive)
-  const maxScore = input.managementType === 'self-managed' ? 70 : 65;
+  const maxScore = input.managementType === 'self-managed' ? 50 : 45;
 
   return {
     leadScore,

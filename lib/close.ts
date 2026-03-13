@@ -48,8 +48,7 @@ function buildSummaryString(input: FormInput, statement: StatementResult, score:
     `Reserve: $${statement.reserveRecommendation.monthlyContribution.toLocaleString()}/mo`,
     `Units: ${input.numUnits}`,
     `Clean Statement: ${input.hasCleanStatement ? 'Yes' : 'No'}`,
-    `Switch: ${input.switchTimeline}`,
-    `Primary Problem: ${input.primaryProblem}`,
+    `Frustrations: ${(input.primaryProblems || []).join(', ')}`,
     `Score: ${score.leadScore}/${score.maxScore} — ${score.scoreClassification}`,
   ];
   return lines.join(' | ');
@@ -81,7 +80,6 @@ export async function createLead(
   const customFields: Record<string, unknown> = {};
   if (closeConfig.cf.propertyAddress) customFields[`custom.${closeConfig.cf.propertyAddress}`] = input.propertyAddress;
   if (closeConfig.cf.askingRent) customFields[`custom.${closeConfig.cf.askingRent}`] = input.monthlyRent;
-  if (closeConfig.cf.daysOnMarket) customFields[`custom.${closeConfig.cf.daysOnMarket}`] = timelineToDays(input.switchTimeline);
   if (closeConfig.cf.urgencyScore) customFields[`custom.${closeConfig.cf.urgencyScore}`] = `${score.leadScore}/${score.maxScore} — ${score.scoreClassification}`;
   if (closeConfig.cf.auditSummary) customFields[`custom.${closeConfig.cf.auditSummary}`] = buildSummaryString(input, statement, score);
   if (closeConfig.cf.leadSource) customFields[`custom.${closeConfig.cf.leadSource}`] = 'Monthly Sweep Simulator';

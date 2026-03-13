@@ -22,9 +22,7 @@ interface FormData {
   numUnits: string;
   hasCleanStatement: boolean | null;
   utilitiesResponsibility: 'owner' | 'tenant' | '';
-  desiredSwitchDate: string;
-  switchTimeline: '< 30 days' | '30-60 days' | '60-90 days' | '90+ days' | '';
-  primaryProblem: string;
+  primaryProblems: string[];
 }
 
 const PRIMARY_PROBLEMS = [
@@ -57,9 +55,7 @@ export default function SweepForm() {
     numUnits: '1',
     hasCleanStatement: null,
     utilitiesResponsibility: '',
-    desiredSwitchDate: new Date().toISOString().split('T')[0],
-    switchTimeline: '< 30 days',
-    primaryProblem: '',
+    primaryProblems: [],
   });
 
   const update = (field: keyof FormData, value: string | boolean | null | string[]) => {
@@ -127,9 +123,7 @@ export default function SweepForm() {
     if (step === 3) {
       return !!(
         form.utilitiesResponsibility &&
-        form.desiredSwitchDate &&
-        form.switchTimeline &&
-        form.primaryProblem
+        form.primaryProblems.length > 0
       );
     }
     return false;
@@ -157,9 +151,7 @@ export default function SweepForm() {
         numUnits: parseInt(form.numUnits, 10),
         hasCleanStatement: form.hasCleanStatement,
         utilitiesResponsibility: form.utilitiesResponsibility,
-        desiredSwitchDate: form.desiredSwitchDate,
-        switchTimeline: form.switchTimeline,
-        primaryProblem: form.primaryProblem,
+        primaryProblems: form.primaryProblems,
       };
 
       const res = await fetch('/api/submit', {
@@ -451,47 +443,29 @@ export default function SweepForm() {
             </div>
           </div>
 
-          <div className="field-row">
-            <div className="field-group">
-              <label htmlFor="desiredSwitchDate">Desired Switch Date</label>
-              <input
-                id="desiredSwitchDate"
-                type="date"
-                value={form.desiredSwitchDate}
-                onChange={(e) => update('desiredSwitchDate', e.target.value)}
-              />
-            </div>
-            <div className="field-group">
-              <label>Switch Timeline</label>
-              <select
-                value={form.switchTimeline}
-                onChange={(e) => update('switchTimeline', e.target.value)}
-                className="select-field"
-              >
-                <option value="">Select...</option>
-                <option value="< 30 days">&lt; 30 days</option>
-                <option value="30-60 days">30–60 days</option>
-                <option value="60-90 days">60–90 days</option>
-                <option value="90+ days">90+ days</option>
-              </select>
-            </div>
-          </div>
-
           <div className="field-group">
-            <label>What&apos;s your biggest frustration right now?</label>
-            <div className="radio-group">
-              {PRIMARY_PROBLEMS.map((problem) => (
-                <label key={problem} className={`radio-option ${form.primaryProblem === problem ? 'active' : ''}`}>
-                  <input
-                    type="radio"
-                    name="primaryProblem"
-                    value={problem}
-                    checked={form.primaryProblem === problem}
-                    onChange={(e) => update('primaryProblem', e.target.value)}
-                  />
-                  {problem}
-                </label>
-              ))}
+            <label>What are your biggest frustrations right now?</label>
+            <div className="chip-group">
+              {PRIMARY_PROBLEMS.map((problem) => {
+                const isSelected = form.primaryProblems.includes(problem);
+                return (
+                  <button
+                    key={problem}
+                    type="button"
+                    className={`chip ${isSelected ? 'active' : ''}`}
+                    onClick={() => {
+                      setForm((prev) => ({
+                        ...prev,
+                        primaryProblems: isSelected
+                          ? prev.primaryProblems.filter((p) => p !== problem)
+                          : [...prev.primaryProblems, problem],
+                      }));
+                    }}
+                  >
+                    {problem}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

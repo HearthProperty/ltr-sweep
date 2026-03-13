@@ -17,15 +17,7 @@ export const formInputSchema = z.object({
   utilitiesResponsibility: z.enum(['owner', 'tenant']),
   hoaPassthrough: z.number().min(0).optional().default(0),
   passthroughCategories: z.array(z.string()).optional().default([]),
-  desiredSwitchDate: z.string().min(1, 'Switch date is required'),
-  switchTimeline: z.enum(['< 30 days', '30-60 days', '60-90 days', '90+ days']),
-  primaryProblem: z.enum([
-    'Messy statements',
-    'Unclear owner payout',
-    'Approval confusion',
-    'Too many pass-through surprises',
-    'No real portfolio visibility',
-  ]),
+  primaryProblems: z.array(z.string()).min(1, 'Select at least one frustration'),
 });
 
 export type FormInput = z.infer<typeof formInputSchema>;
