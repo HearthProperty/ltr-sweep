@@ -288,7 +288,7 @@ function ResultsContent() {
           </p>
           <div className="cta-buttons">
             <a
-              href="https://calendly.com/hearthproperty/30min"
+              href={`https://calendly.com/hearthproperty/30min?name=${encodeURIComponent(input.ownerName)}&email=${encodeURIComponent(input.email)}&a1=${encodeURIComponent(input.propertyAddress)}`}
               className="btn-primary"
               target="_blank"
               rel="noopener noreferrer"
