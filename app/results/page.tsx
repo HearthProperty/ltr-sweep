@@ -152,7 +152,7 @@ function ResultsContent() {
           <div className="comparison-col sweep-col">
             <div className="comparison-col-header">
               <span className="comparison-icon">✦</span>
-              <h3>Your Monthly Sweep</h3>
+              <h3>Hearth Monthly Sweep</h3>
             </div>
             <div className="comparison-col-body">
               {/* Mini statement preview */}
@@ -325,7 +325,7 @@ export default function ResultsPage() {
     <Suspense fallback={
       <div className="results-loading">
         <div className="loading-spinner" />
-        <p>Loading your Monthly Sweep results...</p>
+        <p>Loading your Hearth Monthly Sweep results...</p>
       </div>
     }>
       <ResultsContent />
