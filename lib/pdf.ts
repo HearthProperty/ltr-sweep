@@ -237,8 +237,7 @@ export function buildStatementHTML(
 
   <div class="section-title">Reserve Recommendation</div>
   <div class="reserve-box">
-    <strong>$${r.monthlyContribution.toLocaleString()}/mo</strong> toward a
-    <strong>$${r.targetAmount.toLocaleString()}</strong> target<br>
+    Target reserve: <strong>$${r.targetAmount.toLocaleString()}</strong><br>
     ${r.rationale}
   </div>
 

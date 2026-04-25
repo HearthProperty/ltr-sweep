@@ -80,11 +80,6 @@ function ResultsContent() {
     ? 'Self-managed (you\'re doing it all)'
     : 'Current PM';
 
-  const scoreColor =
-    score.scoreClassification === 'immediate' ? '#e74c3c' :
-    score.scoreClassification === 'high' ? '#f97316' :
-    score.scoreClassification === 'moderate' ? '#eab308' : '#22c55e';
-
   return (
     <div className="results-page">
 
@@ -134,8 +129,7 @@ function ResultsContent() {
                 <div className="chaos-item">
                   <span className="chaos-icon">✕</span>
                   <span>
-                    Paying {s.effectiveManagementRate}% in combined management + leasing fees
-                    (${fmt(s.hearthManagementFee)}/mo effective)
+                    Paying more than Hearth&apos;s flat 8% in combined management + leasing fees
                   </span>
                 </div>
               )}
@@ -162,7 +156,7 @@ function ResultsContent() {
                   <span>${fmt(s.grossRent)}</span>
                 </div>
                 <div className="sweep-line sweep-line-deduction">
-                  <span>Management Fee ({s.effectiveManagementRate}%)</span>
+                  <span>Management Fee (8%)</span>
                   <span>−${fmt(s.hearthManagementFee)}</span>
                 </div>
                 <div className="sweep-line sweep-line-deduction">
@@ -222,11 +216,6 @@ function ResultsContent() {
         <div className="reserve-card">
           <div className="reserve-numbers">
             <div className="reserve-stat">
-              <div className="reserve-value">${r.monthlyContribution.toLocaleString()}</div>
-              <div className="reserve-label">Monthly Contribution</div>
-            </div>
-            <div className="reserve-divider" />
-            <div className="reserve-stat">
               <div className="reserve-value">${r.targetAmount.toLocaleString()}</div>
               <div className="reserve-label">Target Reserve</div>
             </div>
@@ -266,13 +255,13 @@ function ResultsContent() {
 
       {/* Score (subtle) */}
       <section className="results-section score-section">
-        <div className="score-badge" style={{ borderColor: scoreColor }}>
-          <span className="score-number" style={{ color: scoreColor }}>{score.leadScore}</span>
+        <div className="score-badge" style={{ borderColor: '#f97316' }}>
+          <span className="score-number" style={{ color: '#f97316' }}>{score.leadScore}</span>
           <span className="score-max">/{score.maxScore}</span>
         </div>
         <p className="score-desc">
-          Switch readiness: <strong style={{ color: scoreColor }}>
-            {score.scoreClassification.charAt(0).toUpperCase() + score.scoreClassification.slice(1)}
+          Switch readiness: <strong style={{ color: '#f97316' }}>
+            High
           </strong>
         </p>
       </section>
@@ -288,12 +277,12 @@ function ResultsContent() {
           </p>
           <div className="cta-buttons">
             <a
-              href={`https://calendly.com/hearthproperty/30min?name=${encodeURIComponent(input.ownerName)}&email=${encodeURIComponent(input.email)}&a1=${encodeURIComponent(input.propertyAddress)}`}
+              href={`https://calendly.com/hearthproperty/hearth-strategy-call?name=${encodeURIComponent(input.ownerName)}&email=${encodeURIComponent(input.email)}&a1=${encodeURIComponent(input.propertyAddress)}`}
               className="btn-primary"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Book a Switch Call
+              Book a Strategy Call
             </a>
             <a
               href="https://app.hearthproperty.com/onboarding"

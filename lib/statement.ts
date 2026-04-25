@@ -39,15 +39,8 @@ function calculateReserveContribution(monthlyRent: number, reserveTarget?: numbe
 export function generateStatement(input: FormInput): StatementResult {
   const grossRent = round2(input.monthlyRent);
 
-  // Use the owner's CURRENT management fee + amortized leasing fee
-  // managementFeeCurrent is already a dollar amount (converted from % in form)
-  // leasingFeeCurrent is a one-time cost per lease, amortized over 12 months
-  const currentMgmtFee = input.managementFeeCurrent || 0;
-  const amortizedLeasingFee = round2((input.leasingFeeCurrent ?? 0) / 12);
-  const hearthManagementFee = round2(currentMgmtFee + amortizedLeasingFee);
-  const effectiveManagementRate = grossRent > 0
-    ? round2((hearthManagementFee / grossRent) * 100)
-    : 0;
+  // Hearth charges a flat 8% management fee on gross rent
+  const hearthManagementFee = round2(grossRent * HEARTH_MANAGEMENT_FEE_RATE);
 
   // Estimate repairs at ~2% of rent if not provided
   const repairsEstimate = round2(input.avgMonthlyRepairs ?? grossRent * 0.02);
@@ -63,7 +56,6 @@ export function generateStatement(input: FormInput): StatementResult {
   const sampleStatement: SampleStatement = {
     grossRent,
     hearthManagementFee,
-    effectiveManagementRate,
     repairsEstimate,
     reserveContribution,
     hoaPassthrough,
