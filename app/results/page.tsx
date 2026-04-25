@@ -159,26 +159,6 @@ function ResultsContent() {
                   <span>Management Fee (8%)</span>
                   <span>−${fmt(s.hearthManagementFee)}</span>
                 </div>
-                <div className="sweep-line sweep-line-deduction">
-                  <span>Repairs &amp; Maintenance</span>
-                  <span>−${fmt(s.repairsEstimate)}</span>
-                </div>
-                <div className="sweep-line sweep-line-reserve">
-                  <span>Operating Reserve</span>
-                  <span>${fmt(s.reserveContribution)}</span>
-                </div>
-                {s.hoaPassthrough > 0 && (
-                  <div className="sweep-line sweep-line-deduction">
-                    <span>HOA / Pass-through</span>
-                    <span>−${fmt(s.hoaPassthrough)}</span>
-                  </div>
-                )}
-                {s.utilities > 0 && (
-                  <div className="sweep-line sweep-line-deduction">
-                    <span>Utilities (estimated)</span>
-                    <span>−${fmt(s.utilities)}</span>
-                  </div>
-                )}
                 <div className="sweep-line sweep-line-total">
                   <span>Net Owner Distribution</span>
                   <span>${fmt(s.netOwnerDistribution)}</span>

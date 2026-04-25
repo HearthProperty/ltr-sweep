@@ -43,24 +43,17 @@ export function generateStatement(input: FormInput): StatementResult {
   // Hearth charges a flat 8% management fee on gross rent
   const hearthManagementFee = round2(grossRent * HEARTH_MANAGEMENT_FEE_RATE);
 
-  // Estimate repairs at ~2% of rent if not provided
-  const repairsEstimate = round2(input.avgMonthlyRepairs ?? grossRent * 0.02);
-  const reserveContribution = calculateReserveContribution(grossRent, input.reserveTarget);
-  const hoaPassthrough = round2(input.hoaPassthrough ?? 0);
-  const utilities = calculateUtilities(grossRent, input.utilitiesResponsibility);
-
-  const totalDeductions = round2(
-    hearthManagementFee + repairsEstimate + reserveContribution + hoaPassthrough + utilities
-  );
+  // Statement only shows fee as deduction — payout = 92% of gross
+  const totalDeductions = hearthManagementFee;
   const netOwnerDistribution = round2(grossRent - totalDeductions);
 
   const sampleStatement: SampleStatement = {
     grossRent,
     hearthManagementFee,
-    repairsEstimate,
-    reserveContribution,
-    hoaPassthrough,
-    utilities,
+    repairsEstimate: 0,
+    reserveContribution: 0,
+    hoaPassthrough: 0,
+    utilities: 0,
     totalDeductions,
     netOwnerDistribution,
   };
