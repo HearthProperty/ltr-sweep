@@ -46,9 +46,12 @@ export function calculateScore(input: FormInput): ScoreResult {
     triggered: signal.test(input),
   }));
 
-  const leadScore = breakdown
+  const rawScore = breakdown
     .filter((b) => b.triggered)
     .reduce((sum, b) => sum + b.points, 0);
+
+  // Floor at 35 — every lead should show meaningful switch readiness
+  const leadScore = Math.max(rawScore, 35);
 
   // Max possible depends on management type (mutually exclusive)
   const maxScore = input.managementType === 'self-managed' ? 50 : 45;

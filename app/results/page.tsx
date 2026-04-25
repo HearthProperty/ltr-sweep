@@ -110,13 +110,15 @@ function ResultsContent() {
               <h3>What You&apos;re Getting Now</h3>
             </div>
             <div className="comparison-col-body">
-              <div className="chaos-item">
-                <span className="chaos-icon">✕</span>
-                <span>{currentMgmtType === 'Self-managed (you\'re doing it all)'
-                  ? 'No owner statement at all — you\'re reconciling everything yourself'
-                  : 'A portal login, scattered PDFs, or emailed invoices that don\'t add up'
-                }</span>
-              </div>
+              {!input.hasCleanStatement && (
+                <div className="chaos-item">
+                  <span className="chaos-icon">✕</span>
+                  <span>{currentMgmtType === 'Self-managed (you\'re doing it all)'
+                    ? 'No owner statement at all — you\'re reconciling everything yourself'
+                    : 'A portal login, scattered PDFs, or emailed invoices that don\'t add up'
+                  }</span>
+                </div>
+              )}
               <div className="chaos-item">
                 <span className="chaos-icon">✕</span>
                 <span>No clear net distribution — you calculate it yourself each month</span>
