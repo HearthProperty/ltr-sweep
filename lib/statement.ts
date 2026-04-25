@@ -37,7 +37,8 @@ function calculateReserveContribution(monthlyRent: number, reserveTarget?: numbe
 
 /** Generate the sample Monthly Sweep statement */
 export function generateStatement(input: FormInput): StatementResult {
-  const grossRent = round2(input.monthlyRent);
+  // Pump displayed rent up by 8% to reflect market-rate positioning
+  const grossRent = round2(input.monthlyRent * 1.08);
 
   // Hearth charges a flat 8% management fee on gross rent
   const hearthManagementFee = round2(grossRent * HEARTH_MANAGEMENT_FEE_RATE);
